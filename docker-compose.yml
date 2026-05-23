@@ -1,0 +1,67 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: pos-app
+
+    volumes:
+      - .:/var/www
+
+    depends_on:
+      - postgres
+      - redis
+
+    networks:
+      - pos-network
+
+
+  nginx:
+    image: nginx:alpine
+
+    container_name: pos-nginx
+
+    ports:
+      - "9001:80"
+
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+    depends_on:
+      - app
+
+    networks:
+      - pos-network
+
+
+  postgres:
+    image: postgres:17
+
+    environment:
+      POSTGRES_DB: pos
+      POSTGRES_USER: posuser
+      POSTGRES_PASSWORD: secret
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - pos-network
+
+
+  redis:
+    image: redis:alpine
+
+    networks:
+      - pos-network
+
+
+networks:
+  pos-network:
+
+
+volumes:
+  postgres_data:
