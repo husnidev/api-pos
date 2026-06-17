@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 
 Route::prefix('auth')
 ->group(function(){
@@ -31,5 +32,18 @@ Route::prefix('auth')
         );
 
     });
+
+});
+
+Route::middleware([
+    'auth:sanctum',
+    // use pipe to separate multiple roles for the role middleware
+    'role:admin|owner'
+])->group(function(){
+
+    Route::apiResource(
+        'categories',
+        CategoryController::class
+    );
 
 });
