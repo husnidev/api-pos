@@ -38,7 +38,6 @@ Route::prefix('auth')
 Route::middleware([
     'auth:sanctum',
     // use pipe to separate multiple roles for the role middleware
-    'role:admin|owner'
 ])->group(function(){
 
     Route::apiResource(
